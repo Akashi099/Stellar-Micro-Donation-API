@@ -17,6 +17,7 @@ const { checkPermission } = require('../middleware/rbac');
 const { PERMISSIONS } = require('../utils/permissions');
 const Transaction = require('../models/transaction');
 const { SDG_CATEGORIES} = require('../services/ImpactMetricService');
+const { serialize: csvSerialize } = require('../utils/csvSerializer');
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -170,7 +171,7 @@ router.post('/report/export', requireApiKey, checkPermission(PERMISSIONS.DONATIO
 
       res.setHeader('Content-Type', 'text/csv');
       res.setHeader('Content-Disposition', `attachment; filename="impact-report-${Date.now()}.csv"`);
-      return res.send(lines.join('\n'));
+      return res.send(csvSerialize(headers, rows));
     }
 
     // PDF: return a minimal text-based PDF
